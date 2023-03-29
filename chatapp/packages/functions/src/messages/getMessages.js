@@ -2,7 +2,8 @@ import { getMessages } from "@chatapp/core/src/database"
 
 
 export async function main(event){
-    const messages = await getMessages();
+    const { id } = event.pathParameters;
+    const messages = await getMessages(id);
     return {
         statusCode: 200,
         body: JSON.stringify({

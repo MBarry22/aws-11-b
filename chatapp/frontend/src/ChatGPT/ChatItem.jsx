@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { EditIcon, TrashIcon } from './Icons'; // Import the icons from a separate file
-
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { twMerge } from 'tailwind-merge';
 
 const ChatItem = ({ chat, selected, onSelect, onUpdate, onDelete }) => {
+  const { user } = useAuthenticator((context) => [context.user]);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(chat.name);
 
@@ -31,29 +32,33 @@ const ChatItem = ({ chat, selected, onSelect, onUpdate, onDelete }) => {
   return (
     <div className="p-2 my-1" onClick={handleSelect}>
       {isEditing ? (
-        <div className="flex">
+        <div className="flex text-">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="flex-grow p-1 border rounded text-black"
           />
-          <button onClick={handleUpdate} className="ml-2 px-2 py-1 bg-green-500 text-white font-semibold rounded">
+          <button onClick={handleUpdate} className="ml-2 px-2 py-1 bg-green-500 text-black font-semibold rounded">
             Save
           </button>
-          <button onClick={toggleEditing} className="ml-2 px-2 py-1 bg-red-500 text-white font-semibold rounded">
+          <button onClick={toggleEditing} className="ml-2 px-2 py-1 bg-red-500 text-black font-semibold rounded">
             Cancel
           </button>
         </div>
       ) : (
         <div className={twMerge("flex items-center cursor-pointer hover:bg-gray-900 ", selected ? "bg-gray-900" : "")}>
           <h3 className="flex-grow font-semibold ">{chat.name}</h3>
+          {user && (
+            <>
           <button onClick={toggleEditing} className="px-1 text-gray-600 hover:text-gray-800">
             <EditIcon />
           </button>
           <button onClick={handleDelete} className="px-1 ml-2 text-gray-600 hover:text-gray-800">
             <TrashIcon />
           </button>
+          </>
+          )}
         </div>
       )}
     </div>
